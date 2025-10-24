@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMNIST - Caso de Prueba 4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: 'ABC';
+            position: absolute;
+            font-size: 15em;
+            font-weight: bold;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ff6b9d;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(255,107,157,0.5);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #8E2DE2;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8E2DE2, #4A00E0);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f3e7ff 0%, #e1d5ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(142,45,226,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid rgba(142,45,226,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(142,45,226,0.3);
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            color: #8E2DE2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4A00E0;
+        }
+
+        .architecture {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e7ff 100%);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #8E2DE2;
+        }
+
+        .layer {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(142,45,226,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .layer:hover {
+            transform: translateX(10px);
+            border-left-color: #8E2DE2;
+            box-shadow: 0 5px 20px rgba(142,45,226,0.25);
+        }
+
+        .layer-name {
+            font-weight: bold;
+            color: #4A00E0;
+            font-size: 1.1em;
+        }
+
+        .layer-params {
+            color: #8E2DE2;
+            font-size: 0.9em;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #8E2DE2, #4A00E0);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(142,45,226,0.4);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 8s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .metric-box:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .metric-label {
+            font-size: 1em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .letter-item {
+            background: linear-gradient(135deg, #f3e7ff 0%, #e1d5ff 100%);
+            padding: 20px 10px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #8E2DE2;
+            box-shadow: 0 3px 10px rgba(142,45,226,0.15);
+        }
+
+        .letter-item:hover {
+            border-color: #8E2DE2;
+            background: linear-gradient(135deg, #8E2DE2, #4A00E0);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(142,45,226,0.4);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ff6b9d 0%, #8E2DE2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #4A00E0;
+            color: white;
+            box-shadow: 0 5px 20px rgba(142,45,226,0.3);
+        }
+
+        .highlight strong {
+            font-size: 1.1em;
+        }
+
+        .code-section {
+            background: #2d2d2d;
+            color: #d4d4d4;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 2px solid #8E2DE2;
+        }
+
+        .comparison-box {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e7ff 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e1d5ff;
+        }
+
+        .comparison-box h3 {
+            color: #8E2DE2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .comparison-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #8E2DE2;
+            box-shadow: 0 2px 8px rgba(142,45,226,0.1);
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6f00;
+        }
+
+        .challenge-box h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+
+        .challenge-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(255,111,0,0.1);
+        }
+
+        .challenge-icon {
+            font-size: 2em;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #f3e7ff 0%, #e1d5ff 100%);
+            padding: 30px;
+            text-align: center;
+            color: #4A00E0;
+            font-weight: 500;
+        }
+
+        ul {
+            list-style-position: inside;
+            line-height: 2;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(120deg, #fff59d 0%, #ffeb3b 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #f57f17;
+            color: #333;
+        }
+
+        .evolution-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e7ff 100%);
+            border-radius: 15px;
+        }
+
+        .evolution-item {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            margin: 0 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(142,45,226,0.15);
+        }
+
+        .evolution-arrow {
+            font-size: 2em;
+            color: #8E2DE2;
+        }
+
+        .confusion-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .confusion-pair {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #ffeb3b;
+            box-shadow: 0 3px 10px rgba(255,235,59,0.3);
+        }
+
+        .confusion-pair .letters {
+            font-size: 3em;
+            font-weight: bold;
+            color: #e65100;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 EMNIST</h1>
+            <div class="subtitle">Extended MNIST - Reconocimiento de Letras Manuscritas</div>
+            <div class="badge">Nivel: Intermedio-Alto ⭐⭐⭐⭐</div>
+        </div>
+
+        <div class="content">
+            <!-- Dataset Overview -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">📊</div>
+                    Descripción del Dataset
+                </h2>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-title">Imágenes de Entrenamiento</div>
+                        <div class="card-value">~124K</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Imágenes de Prueba</div>
+                        <div class="card-value">~20K</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Dimensiones</div>
+                        <div class="card-value">28×28×1</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Clases (Letras)</div>
+                        <div class="card-value">27</div>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <strong>💡 Información Clave:</strong> EMNIST Letters es una extensión del famoso MNIST que incluye letras manuscritas (a-z). Con 27 clases y mayor variabilidad en la escritura, representa un desafío significativamente mayor que el reconocimiento de dígitos. Las letras manuscritas tienen mayor ambigüedad y similitud visual entre clases.
+                </div>
+            </div>
+
+            <!-- Alphabet Display -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🔤</div>
+                    Alfabeto Completo (27 Clases)
+                </h2>
+                <div class="alphabet-grid">
+                    <div class="letter-item">a</div>
+                    <div class="letter-item">b</div>
+                    <div class="letter-item">c</div>
+                    <div class="letter-item">d</div>
+                    <div class="letter-item">e</div>
+                    <div class="letter-item">f</div>
+                    <div class="letter-item">g</div>
+                    <div class="letter-item">h</div>
+                    <div class="letter-item">i</div>
+                    <div class="letter-item">j</div>
+                    <div class="letter-item">k</div>
+                    <div class="letter-item">l</div>
+                    <div class="letter-item">m</div>
+                    <div class="letter-item">n</div>
+                    <div class="letter-item">o</div>
+                    <div class="letter-item">p</div>
+                    <div class="letter-item">q</div>
+                    <div class="letter-item">r</div>
+                    <div class="letter-item">s</div>
+                    <div class="letter-item">t</div>
+                    <div class="letter-item">u</div>
+                    <div class="letter-item">v</div>
+                    <div class="letter-item">w</div>
+                    <div class="letter-item">x</div>
+                    <div class="letter-item">y</div>
+                    <div class="letter-item">z</div>
+                    <div class="letter-item" style="background: linear-gradient(135deg, #ff6b9d, #8E2DE2); color: white;">?</div>
+                </div>
+                <p style="text-align: center; margin-top: 15px; color: #666; font-style: italic;">
+                    * La clase 27 es una categoría adicional en el dataset original
+                </p>
+            </div>
+
+            <!-- Desafíos Únicos -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">⚠️</div>
+                    Desafíos Únicos de EMNIST
+                </h2>
+                <div class="challenge-box">
+                    <h3>¿Por qué es más difícil que MNIST?</h3>
+                    <div class="challenge-item">
+                        <div class="challenge-icon">🔢➡️🔤</div>
+                        <div>
+                            <strong>Más Clases:</strong> 27 clases vs 10 dígitos. Cada clase adicional aumenta exponencialmente la complejidad y las posibles confusiones entre categorías.
+                        </div>
+                    </div>
+                    <div class="challenge-item">
+                        <div class="challenge-icon">✍️</div>
+                        <div>
+                            <strong>Mayor Variabilidad:</strong> Las letras manuscritas tienen muchísimas más variaciones de estilo que los números. Cada persona escribe de forma única.
+                        </div>
+                    </div>
+                    <div class="challenge-item">
+                        <div class="challenge-icon">👯</div>
+                        <div>
+                            <strong>Similitud Visual:</strong> Muchas letras son visualmente similares (i/l, o/0, v/u, etc.), causando confusión incluso para humanos.
+                        </div>
+                    </div>
+                    <div class="challenge-item">
+                        <div class="challenge-icon">🔄</div>
+                        <div>
+                            <strong>Rotación de Datos:</strong> Las imágenes de EMNIST vienen rotadas y deben ser corregidas mediante transposición antes del entrenamiento.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pares Confusos -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🤔</div>
+                    Letras Frecuentemente Confundidas
+                </h2>
+                <div class="confusion-examples">
+                    <div class="confusion-pair">
+                        <div class="letters">i ↔ l</div>
+                        <div>Extremadamente similares en escritura manuscrita</div>
+                    </div>
+                    <div class="confusion-pair">
+                        <div class="letters">o ↔ c</div>
+                        <div>Solo difieren en la apertura</div>
+                    </div>
+                    <div class="confusion-pair">
+                        <div class="letters">v ↔ u</div>
+                        <div>Formas muy parecidas</div>
+                    </div>
+                    <div class="confusion-pair">
+                        <div class="letters">m ↔ n</div>
+                        <div>Diferencia de un trazo</div>
+                    </div>
+                    <div class="confusion-pair">
+                        <div class="letters">s ↔ z</div>
+                        <div>Estilos de escritura similares</div>
+                    </div>
+                    <div class="confusion-pair">
+                        <div class="letters">q ↔ g</div>
+                        <div>Cola puede ser ambigua</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preprocesamiento Especial -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🔧</div>
+                    Preprocesamiento Especial
+                </h2>
+                <div class="warning-box">
+                    <strong>⚠️ Importante:</strong> EMNIST requiere corrección de rotación. Las imágenes vienen en formato transpuesto y deben ser corregidas antes del entrenamiento.
+                </div>
+                <div class="code-section">
+# Función de preprocesamiento para EMNIST
+def preprocess_emnist(image, label):
+    # Corregir la rotación de las imágenes
+    image = tf.transpose(image, [1, 0, 2])
+    
+    # Normalización
+    image = tf.cast(image, tf.float32) / 255.0
+    
+    return image, label
+
+# Aplicar preprocesamiento con pipeline optimizado
+train_ds = ds[0].map(preprocess_emnist) \
+                .batch(128) \
+                .prefetch(tf.data.AUTOTUNE)
+                </div>
+            </div>
+
+            <!-- Arquitectura -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🏗️</div>
+                    Arquitectura del Modelo
+                </h2>
+                <div class="architecture">
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Conv2D (32 filtros, 3×3)</div>
+                            <div class="layer-params">Input: 28×28×1 | Activación: ReLU</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">MaxPooling2D (2×2)</div>
+                            <div class="layer-params">Reducción espacial</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Conv2D (64 filtros, 3×3)</div>
+                            <div class="layer-params">Activación: ReLU</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">MaxPooling2D (2×2)</div>
+                            <div class="layer-params">Reducción espacial</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Conv2D (64 filtros, 3×3)</div>
+                            <div class="layer-params">Activación: ReLU | Capa adicional</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Flatten</div>
+                            <div class="layer-params">Aplanamiento de características</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Dense (128 neuronas)</div>
+                            <div class="layer-params">Activación: ReLU</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Dropout (0.4)</div>
+                            <div class="layer-params">Regularización moderada</div>
+                        </div>
+                        <div>➡️</div>
+                    </div>
+                    <div class="layer">
+                        <div>
+                            <div class="layer-name">Dense (27 neuronas)</div>
+                            <div class="layer-params">Activación: Softmax | Salida (27 clases)</div>
+                        </div>
+                        <div>✅</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuración -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">⚙️</div>
+                    Configuración de Entrenamiento
+                </h2>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-title">Optimizador</div>
+                        <div class="card-value">Adam</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Épocas</div>
+                        <div class="card-value">6</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Batch Size</div>
+                        <div class="card-value">128</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Pipeline</div>
+                        <div class="card-value">AUTOTUNE</div>
+                    </div>
+                </div>
+
+                <div class="comparison-box" style="margin-top: 30px;">
+                    <h3>🚀 Optimización de Pipeline</h3>
+                    <div class="comparison-item">
+                        <strong>tf.data.AUTOTUNE:</strong> Optimización automática del pipeline de datos para maximizar throughput
+                    </div>
+                    <div class="comparison-item">
+                        <strong>Prefetch:</strong> Prepara batches mientras el modelo entrena, reduciendo tiempo de espera
+                    </div>
+                    <div class="comparison-item">
+                        <strong>Batch Processing:</strong> Procesamiento eficiente con batches de 128 imágenes
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">📈</div>
+                    Resultados del Modelo
+                </h2>
+                <div class="metrics-container">
+                    <div class="metric-box">
+                        <div class="metric-label">Precisión en Test</div>
+                        <div class="metric-value">~88%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Precisión Ponderada</div>
+                        <div class="metric-value">~88%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Recall Promedio</div>
+                        <div class="metric-value">~88%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">F1-Score Promedio</div>
+                        <div class="metric-value">~88%</div>
+                    </div>
+                </div>
+
+                <div class="highlight" style="margin-top: 30px;">
+                    <strong>🎯 Rendimiento Sólido:</strong> ~88% de precisión en 27 clases es un resultado excelente considerando la complejidad del problema. Las letras más confusas (i/l, o/c) son los principales desafíos, pero el modelo logra alta generalización.
+                </div>
+            </div>
+
+            <!-- Evolución de Complejidad -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">📊</div>
+                    Evolución de la Complejidad
+                </h2>
+                <div class="evolution-chart">
+                    <div class="evolution-item">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🔢</div>
+                        <strong>MNIST</strong>
+                        <div style="color: #666; margin-top: 5px;">10 clases</div>
+                        <div style="color: #666;">98%+ precisión</div>
+                    </div>
+                    <div class="evolution-arrow">➡️</div>
+                    <div class="evolution-item">
+                        <div style="font-size: 2em; margin-bottom: 10px;">👕</div>
+                        <strong>Fashion-MNIST</strong>
+                        <div style="color: #666; margin-top: 5px;">10 clases</div>
+                        <div style="color: #666;">~91% precisión</div>
+                    </div>
+                    <div class="evolution-arrow">➡️</div>
+                    <div class="evolution-item" style="background: linear-gradient(135deg, #f3e7ff, #e1d5ff);">
+                        <div style="font-size: 2em; margin-bottom: 10px;">📝</div>
+                        <strong>EMNIST</strong>
+                        <div style="color: #8E2DE2; margin-top: 5px; font-weight: bold;">27 clases</div>
+                        <div style="color: #8E2DE2; font-weight: bold;">~88% precisión</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparación con Casos Anteriores -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🔄</div>
+                    Diferencias con Casos Anteriores
+                </h2>
+                <div class="comparison-box">
+                    <h3>¿Qué hace a EMNIST más desafiante?</h3>
+                    <div class="comparison-item">
+                        <strong>vs Fashion-MNIST:</strong> 27 clases vs 10, mayor ambigüedad visual, necesita corrección de rotación
+                    </div>
+                    <div class="comparison-item">
+                        <strong>vs CIFAR-10:</strong> Similar en clases (27 vs 10) pero en escala de grises, requiere distinción más fina
+                    </div>
+                    <div class="comparison-item">
+                        <strong>vs SVHN:</strong> Mismo dominio (caracteres) pero manuscrito vs impreso, mayor variabilidad en estilo
+                    </div>
+                    <div class="comparison-item">
+                        <strong>Complejidad Única:</strong> Balance entre simplicidad visual (escala de grises) y complejidad semántica (27 clases similares)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aplicaciones Prácticas -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">💼</div>
+                    Aplicaciones en el Mundo Real
+                </h2>
+                <div class="comparison-box">
+                    <div class="comparison-item">
+                        <strong>📝 Digitalización de Documentos:</strong> OCR para convertir textos manuscritos en digitales
+                    </div>
+                    <div class="comparison-item">
+                        <strong>✉️ Clasificación de Correo:</strong> Lectura automática de direcciones escritas a mano
+                    </div>
+                    <div class="comparison-item">
+                        <strong>🏥 Formularios Médicos:</strong> Procesamiento de recetas y formularios manuscritos
+                    </div>
+                    <div class="comparison-item">
+                        <strong>🏦 Procesamiento Bancario:</strong> Lectura de cheques y formularios financieros
+                    </div>
+                    <div class="comparison-item">
+                        <strong>📚 Educación Digital:</strong> Sistemas de evaluación automática de respuestas escritas
+                    </div>
+                </div>
+            </div>
+
+            <!-- Análisis Técnico -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🔬</div>
+                    Análisis Técnico
+                </h2>
+                <div class="comparison-box">
+                    <h3>Estrategias para Mejorar el Rendimiento</h3>
+                    <div class="comparison-item">
+                        <strong>🎨 Data Augmentation:</strong> Rotaciones leves, desplazamientos y distorsiones para simular variabilidad de escritura
+                    </div>
+                    <div class="comparison-item">
+                        <strong>🏗️ Arquitecturas Más Profundas:</strong> ResNet o DenseNet podrían capturar mejor las sutilezas entre letras similares
+                    </div>
+                    <div class="comparison-item">
+                        <strong>⚖️ Class Weights:</strong> Dar más peso a las clases frecuentemente confundidas durante el entrenamiento
+                    </div>
+                    <div class="comparison-item">
+                        <strong>🎯 Ensemble Methods:</strong> Combinar múltiples modelos para mejorar predicciones en casos ambiguos
+                    </div>
+                    <div class="comparison-item">
+                        <strong>🧠 Attention Mechanisms:</strong> Mecanismos de atención para enfocarse en características discriminativas
+                    </div>
+                </div>
+            </div>
+
+            <!-- Código Destacado -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">💻</div>
+                    Código Clave
+                </h2>
+                <div class="code-section">
+# Arquitectura optimizada para 27 clases
+model = keras.Sequential([
+    # Capas convolucionales
+    keras.layers.Conv2D(32, (3,3), activation='relu', 
+                        input_shape=(28,28,1)),
+    keras.layers.MaxPooling2D(2,2),
+    keras.layers.Conv2D(64, (3,3), activation='relu'),
+    keras.layers.MaxPooling2D(2,2),
+    keras.layers.Conv2D(64, (3,3), activation='relu'),
+    
+    # Capas densas
+    keras.layers.Flatten(),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dropout(0.4),  # Regularización moderada
+    
+    # Capa de salida para 27 clases
+    keras.layers.Dense(27, activation='softmax')
+])
+
+# Entrenamiento con validación directa
+history = model.fit(
+    train_ds,
+    epochs=6,
+    validation_data=test_ds  # Validación en test set
+)
+                </div>
+            </div>
+
+            <!-- Lecciones Aprendidas -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">📚</div>
+                    Lecciones Aprendidas
+                </h2>
+                <div class="highlight">
+                    <ul>
+                        <li><strong>Preprocesamiento Crítico:</strong> La corrección de rotación es esencial para EMNIST</li>
+                        <li><strong>Más Clases = Mayor Complejidad:</strong> Pasar de 10 a 27 clases aumenta dramáticamente la dificultad</li>
+                        <li><strong>Similitud Visual:</strong> El mayor desafío son las letras visualmente similares (i/l, o/c, v/u)</li>
+                        <li><strong>Pipeline Optimizado:</strong> AUTOTUNE y prefetch mejoran significativamente el tiempo de entrenamiento</li>
+                        <li><strong>Dropout Moderado:</strong> 0.4 equilibra regularización sin perder capacidad de aprendizaje</li>
+                        <li><strong>Aplicabilidad Real:</strong> Base fundamental para sistemas OCR comerciales</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Conclusiones -->
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="icon">🎯</div>
+                    Conclusiones
+                </h2>
+                <div class="highlight">
+                    <ul>
+                        <li><strong>Complejidad Balanceada:</strong> EMNIST combina simplicidad visual con complejidad semántica</li>
+                        <li><strong>Rendimiento Excelente:</strong> 88% en 27 clases demuestra la efectividad de CNNs en texto manuscrito</li>
+                        <li><strong>Preprocesamiento Único:</strong> Requiere manejo especial de rotación de imágenes</li>
+                        <li><strong>Fundamento OCR:</strong> Esencial para entender sistemas de reconocimiento de texto del mundo real</li>
+                        <li><strong>Siguiente Nivel:</strong> Preparación perfecta para datasets más complejos y multimodales</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Caso de Prueba 4:</strong> EMNIST Letters | Reconocimiento de Letras Manuscritas</p>
+            <p style="margin-top: 10px;">Nivel de Dificultad: Intermedio-Alto ⭐⭐⭐⭐</p>
+            <p style="margin-top: 5px; font-size: 0.9em; opacity: 0.8;">27 Clases | Preprocesamiento Especial | Pipeline Optimizado con AUTOTUNE</p>
+        </div>
+    </div>
+</body>
+</html>
